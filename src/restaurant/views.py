@@ -2,9 +2,13 @@ from django.shortcuts import render
 from django.urls import get_resolver, get_urlconf, URLResolver, URLPattern
 from django.urls.exceptions import NoReverseMatch
 
+# from django_filters.rest_framework import DjangoFilterBackendpython
+from django_filters import rest_framework as django_filters
+
+from rest_framework import filters, generics, permissions
+from rest_framework import generics, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import generics, viewsets, permissions
 from rest_framework.reverse import reverse
 
 from . import models
@@ -57,6 +61,10 @@ class MenuItemsView(generics.ListCreateAPIView):
     serializer_class = serializers.MenuSerializer
     queryset = models.Menu.objects.all()
 
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['title', 'price']
+    ordering_fields = ['title', 'price']
+
     def get_permissions(self):
         if self.request.method == 'GET':
             return []
@@ -78,6 +86,10 @@ class SingleMenuItemView(generics.RetrieveUpdateDestroyAPIView):
 class BookingsView(generics.ListCreateAPIView):
     serializer_class = serializers.BookingSerializer
     queryset = models.Booking.objects.all()
+
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'nbr_of_guests', 'booking_date']
+    ordering_fields = ['name', 'nbr_of_guests', 'booking_date']
 
     def get_permissions(self):
         if self.request.method == 'GET':

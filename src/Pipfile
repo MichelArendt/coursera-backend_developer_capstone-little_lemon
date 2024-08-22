@@ -9,6 +9,9 @@ mysqlclient = "*"
 djangorestframework = "*"
 djangorestframework-xml = "*"
 djoser = "*"
+django-filter = "*"
+django-crispy-forms = "*"
+crispy-bootstrap4 = "*"
 
 [dev-packages]
 
