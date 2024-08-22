@@ -92,7 +92,7 @@ class BookingsView(generics.ListCreateAPIView):
     ordering_fields = ['name', 'nbr_of_guests', 'booking_date']
 
     def get_permissions(self):
-        if self.request.method == 'GET':
+        if self.request.method == 'POST':
             return []
 
         return [permissions.IsAdminUser()]
@@ -103,12 +103,4 @@ class SingleMBookingView(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Booking.objects.all()
 
     def get_permissions(self):
-        if self.request.method == 'GET':
-            return []
-
         return [permissions.IsAdminUser()]
-
-# class BookingViewSet(viewsets.ModelViewSet):
-#     queryset = models.Booking.objects.all()
-#     serializer_class = serializers.BookingSerializer
-#     permission_classes = [permissions.IsAuthenticated]
