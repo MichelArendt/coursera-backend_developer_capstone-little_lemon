@@ -115,11 +115,8 @@ def booking(request):
             print(2)
             time_choices.append((time_slot[0], time_slot[1]))
 
-    # Debugging: Print final time choices
     print("Final time choices:", time_choices)
 
-    # Change the 'time' field to use a Select widget with the generated time slots
-    # form.fields['time'].widget = django.forms.Select(choices=time_choices)
     form.fields['time'].choices = time_choices
 
     # Render the form with the correct time choices
