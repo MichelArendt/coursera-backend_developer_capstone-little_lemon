@@ -104,6 +104,10 @@ section {
 
         > div {
             margin: 20px;
+
+            > input, select {
+                width: 100%;
+            }
         }
 
         > button {
@@ -111,7 +115,7 @@ section {
             border: 1px solid #495E57;
             background-color:#495E57;;
             border-radius: 5px;
-            width: 80%;
+            width: 100%;
             font-size: 1.25rem;
             display: block;
             color: #fff;
