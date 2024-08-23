@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="booking">
+    <h2>Booking</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <!-- Render the name field -->
+        <div>
+            {{ form.name.label_tag }}
+            {{ form.name }}
+        </div>
+
+        <!-- Render the number of guests field -->
+        <div>
+            {{ form.nbr_of_guests.label_tag }}
+            {{ form.nbr_of_guests }}
+        </div>
+
+        <!-- Render the date field -->
+        <div>
+            {{ form.date.label_tag }}
+            {{ form.date }}
+        </div>
+
+        <!-- Render the time select field with the workaround -->
+        <div>
+            <label for="id_time">Time</label>
+            <select name="time" id="id_time">
+                {% for value, display_name in form.fields.time.choices %}
+                    <option value="{{ value }}" {% if "(Booked)" in display_name %}disabled{% endif %}>
+                        {{ display_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit">Reserve your table!</button>
+    </form>
+</section>
+{% endblock %}

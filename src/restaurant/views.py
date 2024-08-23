@@ -1,8 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import get_resolver, get_urlconf, URLResolver, URLPattern
 from django.urls.exceptions import NoReverseMatch
-
-# from django_filters.rest_framework import DjangoFilterBackendpython
+import django
 from django_filters import rest_framework as django_filters
 
 from rest_framework import filters, generics, permissions
@@ -11,8 +10,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
-from . import models
-from . import serializers
+from datetime import datetime, timedelta, date
+
+from . import models, serializers, forms
 
 class APIRootView(APIView):
     def get(self, request, format=None):
@@ -54,7 +54,76 @@ class APIRootView(APIView):
         return Response(api_urls)
 
 def index(request):
-    return render(request, 'index.html', {})
+    return render(request, 'home.html', {})
+
+def menu(request):
+    menu_items = models.Menu.objects.all().order_by('title')
+
+    return render(request, 'menu.html', { 'menu_items': menu_items})
+
+def booking(request):
+    # Initialize form for both GET and POST requests
+    form = forms.BookingForm(request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        # Save the form data to the database
+        form.save()
+
+        # Redirect to the same page to reset the form
+        return redirect('booking')
+
+    # Set the date field's widget type to 'date' and set the minimum date to today
+    form.fields['date'].widget = django.forms.DateInput(attrs={
+        'type': 'date',
+        'min': date.today().isoformat(),  # Set the minimum date to today's date
+    })
+
+    # Change the label of the 'nbr_of_guests' field
+    form.fields['nbr_of_guests'].label = 'Number of Guests'
+
+    # Add a placeholder to the 'nbr_of_guests' field
+    form.fields['nbr_of_guests'].widget.attrs.update({'placeholder': 'Enter number of guests'})
+
+    # Generate time slots in 30-minute increments from 11:00 to 23:00
+    opening_time = datetime.strptime('11:00', '%H:%M').time()
+    closing_time = datetime.strptime('23:00', '%H:%M').time()
+    time_slots = []
+
+    current_time = datetime.combine(date.today(), opening_time)
+    end_time = datetime.combine(date.today(), closing_time)
+
+    while current_time <= end_time:
+        time_slots.append((current_time.strftime('%H:%M'), current_time.strftime('%I:%M %p')))
+        current_time += timedelta(minutes=60)
+
+    # Check for existing bookings for the selected date
+    selected_date = form.data.get('date') or date.today()  # Use today's date if no date is selected
+    booked_times = models.Booking.objects.filter(date=selected_date).values_list('time', flat=True)
+
+    # Convert booked_times to strings in 'HH:MM' format for comparison
+    booked_times = [bt.strftime('%H:%M') for bt in booked_times]
+
+    # Mark booked times as disabled
+    time_choices = []
+    print('booked_times: ' + str(booked_times))
+    for time_slot in time_slots:
+        print('time_slot: ' + str(time_slot))
+        if time_slot[0] in booked_times:
+            print(1)
+            time_choices.append((time_slot[0], f"{time_slot[1]} (Booked)"))
+        else:
+            print(2)
+            time_choices.append((time_slot[0], time_slot[1]))
+
+    # Debugging: Print final time choices
+    print("Final time choices:", time_choices)
+
+    # Change the 'time' field to use a Select widget with the generated time slots
+    # form.fields['time'].widget = django.forms.Select(choices=time_choices)
+    form.fields['time'].choices = time_choices
+
+    # Render the form with the correct time choices
+    return render(request, 'booking.html', {'form': form})
 
 # get and post
 class MenuItemsView(generics.ListCreateAPIView):
@@ -88,8 +157,8 @@ class BookingsView(generics.ListCreateAPIView):
     queryset = models.Booking.objects.all()
 
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['name', 'nbr_of_guests', 'booking_date']
-    ordering_fields = ['name', 'nbr_of_guests', 'booking_date']
+    search_fields = ['name', 'nbr_of_guests', 'date','time']
+    ordering_fields = ['name', 'nbr_of_guests', 'date','time']
 
     def get_permissions(self):
         if self.request.method == 'POST':

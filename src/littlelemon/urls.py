@@ -27,8 +27,9 @@ from restaurant import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
-    path('home', views.index, name='home'),
+    path('', views.index, name='home'),
+    path('menu', views.menu, name='menu'),
+    path('booking', views.booking, name='booking'),
     path('api/', include('restaurant.urls')),
     path('api/auth/', include('djoser.urls')),
     path('api/auth/', include('djoser.urls.authtoken')),

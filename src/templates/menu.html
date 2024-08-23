@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="heading_shadow">MENU</h1>
+{% if menu_items %}
+    <ul class="custom_list">
+        {% for item in menu_items %}
+            {% if item.inventory == 0 %}
+                <li style="text-decoration: line-through; color: gainsboro" title="OUT OF STOCK!">{{item.title}} <strong >US$ {{item.price}}</strong></li>
+            {% else %}
+                <li>{{item.title}} <strong style="color: brown">US$ {{item.price}}</strong></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% else %}
+    No menu items were found!
+{% endif %}
+{% endblock %}

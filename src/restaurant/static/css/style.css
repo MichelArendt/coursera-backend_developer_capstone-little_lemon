@@ -1,3 +1,7 @@
+* {
+    transition: all 0.3s ease-in-out ;
+}
+
 body {
     font-family: 'Karla', sans-serif;
     margin-top: 3rem;
@@ -88,6 +92,34 @@ section {
     flex-direction: row;
 }
 
+.booking {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+
+    > form {
+        text-align: left;
+        width: 350px;
+        align-self: center;
+
+        > div {
+            margin: 20px;
+        }
+
+        > button {
+            padding: .5rem 1rem;
+            border: 1px solid #495E57;
+            background-color:#495E57;;
+            border-radius: 5px;
+            width: 80%;
+            font-size: 1.25rem;
+            display: block;
+            color: #fff;
+            line-height: 25px;
+          }
+    }
+}
+
 article {
     flex:1;
 }
@@ -115,7 +147,7 @@ label {
     display: block;
   }
 
-input{
+input, select{
     width: 80%;
     display: block;
     padding: .5rem 1rem;
@@ -150,24 +182,24 @@ input{
     text-shadow: 2px 2px 4px #333333;
 }
 
-.cta { 
-    display: inline-block; 
+.cta {
+    display: inline-block;
     color: rgba(255, 255, 255, 0.9);
-    width: 200px; 
-    font-weight: bold; 
+    width: 200px;
+    font-weight: bold;
     font-size: 1.5rem;
-    padding: 8px; 
-    border: 3px solid #fff; 
-    text-align: center; 
-    outline: none; 
-    text-decoration: none; 
+    padding: 8px;
+    border: 3px solid #fff;
+    text-align: center;
+    outline: none;
+    text-decoration: none;
     margin: 1rem;
-} 
+}
 
 .cta:hover {
     color:#fff;
     background:#495E57;
-    border: 3px solid #495E57; 
+    border: 3px solid #495E57;
   }
 
   .heading-shadow {
@@ -176,6 +208,7 @@ input{
 
 footer {
     background-color: #EDEFEE;
+    margin-top: 10px;
     padding: 1rem;
     display: flex;
     gap: 2rem 1rem;
@@ -237,14 +270,14 @@ footer p {
 
 @media (max-width: 800px) {
     section {
-        flex-direction: column;   
+        flex-direction: column;
     }
 
     .row {
         flex-direction: column;
         width: 100%;
       }
-   
+
     input{
         width: 100%;
     }
@@ -253,3 +286,9 @@ footer p {
         width: 100%;
     }
   }
+
+.custom_list {
+    > li {
+        padding: 10px; /* Adds padding inside each list item */
+    }
+}
